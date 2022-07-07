@@ -13,7 +13,7 @@
 ```bash
 pip install -r requirements.txt
 ```
-
+<!-- pg_ctl -D "C:\Program Files\PostgreSQL\13.2\data" start -->
 #### Key Pip Dependencies
 
 - [Flask](http://flask.pocoo.org/) is a lightweight backend microservices framework. Flask is required to handle requests and responses.
