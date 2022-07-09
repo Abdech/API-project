@@ -239,6 +239,7 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not.
     """
+   
     @app.route('/quizzes', methods=['POST'])
     def post_quizzes():
         body = request.get_json()
@@ -246,37 +247,31 @@ def create_app(test_config=None):
         previous_questions = body.get('previous_questions', None)
         quiz_category = body.get('quiz_category', None)
         
-        print(quiz_category)
-        print(previous_questions)
         # try:
-        
-        # get all questions
-        all_questions = Question.query.all()
+        question = {}
+        # get all questions and choice randomly from the questions
         if quiz_category['id'] == 0:
-            # all_questions = Question.query.filter(Question.id.notin_(previous_questions)).all() 
-            # previous_questions.append
-       
-            # question = Question.query.filter(random.randrange(0, len(all_questions) )).all()
+            question = Question.query.filter(Question.id.notin_(previous_questions)).all()
+            randchoice = random.choice(question)
             
-        # else:
-        #     random_question = Question.query.filter(Question.category == quiz_category['id']).filter(Question.id.notin_(previous_questions)).all()
-        
-        
-        # return random question within given category ()
-        # returned question should not be in previous quesiton (not in)
-        # get all questions
-        # random_questions = json.dumps(random_question)
+            
+        else:
+            categorzed_questions = Question.query.filter(Question.category == quiz_category['id']).filter(Question.id.notin_(previous_questions)).all()
+            
+            randchoice = random.choice(categorzed_questions)
+            print(randchoice)
+            
+            if len(previous_questions) >= 5:
+                randchoice is None
+                
+            
 
-        # categorized_questions = paginate_question(request, random_question)
-            question = None;
-            
-            if all_questions :
-                question = random.choice(all_questions)
-         
+        
+              
             
         return jsonify({
             'success': True,
-            'questions': question.format()
+            'question':randchoice.format()
         })
         # except:
         #     abort(422)
@@ -307,6 +302,17 @@ def create_app(test_config=None):
                 'message': 'bad resource'
             }), 400
         )
+    # UNPROCESSABLE ENTTIY
+    @app.errorhandler(405)
+    def not_found(error):
+        return(
+            jsonify({
+                'success': False, 
+                'error': 405, 
+                'message': 'method not allowd'
+            }), 405
+        )
+        
     # UNPROCESSABLE ENTTIY
     @app.errorhandler(422)
     def not_found(error):
